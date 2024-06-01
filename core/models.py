@@ -24,6 +24,9 @@ class Montadora(models.Model):
         return self.nome
 
 
+def set_default_montadora():
+    return Montadora.objects.get_or_create(nome='Padrão')[0] #(object, boolean)
+
 class Carro(models.Model):
     """
     OneToOne (OneToOneField)
@@ -36,7 +39,12 @@ class Carro(models.Model):
     Cada carro tem uma montadora
     Mas uma montadora pode montar vários carros
     """
-    montadora = models.ForeignKey(Montadora, on_delete=models.CASCADE) #1:n
+    #montadora = models.ForeignKey(Montadora, on_delete=models.CASCADE) #1:n
+    """
+    Opção 2 caso necessário
+    Caso a montadora seja deletada, execute a função default para criar uma montadora
+    """
+    montadora = models.ForeignKey(Montadora, on_delete=models.SET(set_default_montadora)) #1:n
     """
     ManyToMany (ManyToManyField)
     Um carro pode ser dirigido por vários motoristas
